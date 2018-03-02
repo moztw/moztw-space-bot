@@ -7,11 +7,13 @@ import org.telegram.telegrambots.api.objects.Message
 import org.telegram.telegrambots.api.objects.User
 
 internal class Reply {
+    private fun getGeneralMessage(chatId: Long) = SendMessage().setChatId(chatId).setParseMode("Markdown")
+
     fun getGeneralMessageOpen(chatId: Long, operator: User) =
-            SendMessage().setChatId(chatId).setText("#工寮開門 ${Bot.dateTime}（by [${operator.firstName}](tg://user?id=${operator.id})）")!!
+            getGeneralMessage(chatId).setText("#工寮開門 ${Bot.dateTime}（by [${operator.firstName}](tg://user?id=${operator.id})）")!!
 
     fun getGeneralMessageClose(chatId: Long, operator: User) =
-            SendMessage().setChatId(chatId).setText("#工寮關門 ${Bot.dateTime}（by [${operator.firstName}](tg://user?id=${operator.id})）")!!
+            getGeneralMessage(chatId).setText("#工寮關門 ${Bot.dateTime}（by [${operator.firstName}](tg://user?id=${operator.id})）")!!
 
     private fun getMessage(message: Message) = SendMessage().setChatId(message.chatId!!).setReplyToMessageId(message.messageId)
 
@@ -26,7 +28,7 @@ internal class Reply {
                     "請檢視以下項目是否完成，完成後可點選來標記："
     ).setReplyMarkup(Keyboard().showButton)!!
 
-    private fun getOtherMessage(chatId: Long) = SendMessage().setChatId(chatId)
+    private fun getOtherMessage(chatId: Long) = SendMessage().setChatId(chatId).setParseMode("Markdown")
 
     fun getOtherMessageOpen(message: Message, chatId: Long, operator: User) =
             getOtherMessage(chatId).setText("#工寮開門 [${operator.firstName}](tg://user?id=${operator.id}) 已從「${message.chat.title}」群組於 ${Bot.dateTime} 送出開門資訊。")!!

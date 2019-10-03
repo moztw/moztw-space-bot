@@ -8,7 +8,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath(kotlinModule("gradle-plugin", kotlin_version))
+        classpath(kotlin("gradle-plugin", kotlin_version))
     }
 }
 
@@ -22,12 +22,15 @@ apply {
 
 val kotlin_version: String by extra
 
+val implementation by configurations
+val testImplementation by configurations
+
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation(kotlinModule("stdlib-jdk8", kotlin_version))
+    implementation(kotlin("stdlib-jdk8", kotlin_version))
     implementation("commons-cli", "commons-cli", "1.4")
     implementation("org.telegram", "telegrambots", "3.6")
     testImplementation("org.junit.jupiter", "junit-jupiter-api", "5.1.0")

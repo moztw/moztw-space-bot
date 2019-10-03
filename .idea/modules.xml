@@ -3,8 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/moztw-space-bot.iml" filepath="$PROJECT_DIR$/.idea/modules/moztw-space-bot.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/moztw-space-bot_main.iml" filepath="$PROJECT_DIR$/.idea/modules/moztw-space-bot_main.iml" group="moztw-space-bot" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/moztw-space-bot_test.iml" filepath="$PROJECT_DIR$/.idea/modules/moztw-space-bot_test.iml" group="moztw-space-bot" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/moztw-space-bot.main.iml" filepath="$PROJECT_DIR$/.idea/modules/moztw-space-bot.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/moztw-space-bot.test.iml" filepath="$PROJECT_DIR$/.idea/modules/moztw-space-bot.test.iml" />
     </modules>
   </component>
 </project>

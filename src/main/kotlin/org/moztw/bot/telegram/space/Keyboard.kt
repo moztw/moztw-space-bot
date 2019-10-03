@@ -24,9 +24,9 @@ internal class Keyboard {
     private fun getKeyboard(text: Array<Array<String>>, data: Array<Array<String>>): InlineKeyboardMarkup {
         val keyboard = InlineKeyboardMarkup()
         val buttons = ArrayList<List<InlineKeyboardButton>>()
-        for (i in 0 until text.size) {
+        for (i in text.indices) {
             val buttonRow = ArrayList<InlineKeyboardButton>()
-            for (j in 0 until text[i].size) {
+            for (j in text[i].indices) {
                 val button = InlineKeyboardButton(text[i][j])
                 button.callbackData = data[i][j]
                 buttonRow.add(button)

@@ -1,9 +1,9 @@
 package org.moztw.bot.telegram.space
 
 import org.apache.commons.cli.*
-import org.telegram.telegrambots.ApiContextInitializer
-import org.telegram.telegrambots.TelegramBotsApi
-import org.telegram.telegrambots.exceptions.TelegramApiRequestException
+import org.telegram.telegrambots.meta.TelegramBotsApi
+import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException
+import org.telegram.telegrambots.updatesreceivers.DefaultBotSession
 import kotlin.system.exitProcess
 
 fun main(args: Array<String>) {
@@ -24,9 +24,8 @@ fun main(args: Array<String>) {
         val botUsername = cmd.getOptionValue("username")
         val botToken = cmd.getOptionValue("token")
 
-        ApiContextInitializer.init()
         try {
-            TelegramBotsApi().registerBot(Bot(username = botUsername, token = botToken))
+            TelegramBotsApi(DefaultBotSession::class.java).registerBot(Bot(username = botUsername, token = botToken))
         } catch (e: TelegramApiRequestException) {
             e.printStackTrace()
         }

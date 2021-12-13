@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
     var kotlin_version: String by extra
-    kotlin_version = "1.3.50"
+    kotlin_version = "1.6.0"
 
     repositories {
         mavenCentral()
@@ -32,11 +32,11 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8", kotlin_version))
-    implementation("commons-cli", "commons-cli", "1.4")
-    implementation("org.telegram", "telegrambots", "3.6")
-    implementation("com.squareup.okhttp3", "okhttp", "4.2.1")
-    implementation("com.beust", "klaxon", "5.0.13")
-    testImplementation("org.junit.jupiter", "junit-jupiter-api", "5.1.0")
+    implementation("commons-cli", "commons-cli", "1.5.0")
+    implementation("org.telegram", "telegrambots", "5.5.0")
+    implementation("com.squareup.okhttp3", "okhttp", "4.9.3")
+    implementation("com.beust", "klaxon", "5.5")
+    testImplementation("org.junit.jupiter", "junit-jupiter-api", "5.8.2")
 }
 
 configure<JavaPluginConvention> {

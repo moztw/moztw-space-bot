@@ -3,17 +3,14 @@ package org.moztw.bot.telegram.space
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.moztw.bot.telegram.space.co2.SpaceCo2
-import org.telegram.telegrambots.api.methods.ActionType
-import org.telegram.telegrambots.api.methods.groupadministration.SetChatTitle
-import org.telegram.telegrambots.api.methods.send.SendChatAction
-import org.telegram.telegrambots.api.methods.send.SendMessage
-import org.telegram.telegrambots.api.methods.send.SendPhoto
-import org.telegram.telegrambots.api.objects.CallbackQuery
-import org.telegram.telegrambots.api.objects.Chat
-import org.telegram.telegrambots.api.objects.Message
-import org.telegram.telegrambots.api.objects.Update
+import org.telegram.telegrambots.meta.api.methods.ActionType
+import org.telegram.telegrambots.meta.api.methods.groupadministration.SetChatTitle
+import org.telegram.telegrambots.meta.api.methods.send.SendChatAction
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto
 import org.telegram.telegrambots.bots.TelegramLongPollingBot
-import org.telegram.telegrambots.exceptions.TelegramApiException
+import org.telegram.telegrambots.meta.api.objects.*
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException
 import java.text.SimpleDateFormat
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -31,7 +28,7 @@ internal class Bot(val username: String, val token: String) : TelegramLongPollin
 
     private fun onCallbackQueryReceived(callbackQuery: CallbackQuery): Boolean {
         try {
-            Reply().getCheckList(callbackQuery)?.run { execute(this) }
+            Reply().getCheckList(callbackQuery).run { execute(this) }
             return true
         } catch (e: TelegramApiException) {
             e.printStackTrace()
@@ -46,7 +43,7 @@ internal class Bot(val username: String, val token: String) : TelegramLongPollin
                 try {
                     execute(SendChatAction().apply {
                         chatId = message.chat.id.toString()
-                        action = ActionType.TYPING
+                        setAction(ActionType.TYPING)
                     })
                 } catch (e: TelegramApiException) {
                     e.printStackTrace()
@@ -77,19 +74,19 @@ internal class Bot(val username: String, val token: String) : TelegramLongPollin
                         try {
                             execute(SendChatAction().apply {
                                 chatId = message.chat.id.toString()
-                                action = ActionType.UPLOADPHOTO
+                                setAction(ActionType.UPLOADPHOTO)
                             })
 
-                            sendPhoto(SendPhoto().apply {
+                            execute(SendPhoto().apply {
                                 caption = messageText
                                 chatId = message.chat.id.toString()
                                 parseMode = "HTML"
                                 replyToMessageId = message.messageId
-                                setNewPhoto("moztw-space-co2.png", imageUrl.let {
+                                photo = InputFile(imageUrl.let {
                                     OkHttpClient()
-                                            .newCall(Request.Builder().url(it).build())
-                                            .execute().body?.byteStream()
-                                })
+                                        .newCall(Request.Builder().url(it).build())
+                                        .execute().body?.byteStream()
+                                }, "moztw-space-co2.png")
                             })
                         } catch (e: TelegramApiException) {
                             e.printStackTrace()

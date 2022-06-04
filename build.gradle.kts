@@ -1,14 +1,14 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
-    var kotlin_version: String by extra
-    kotlin_version = "1.6.0"
+    var kotlinVersion: String by extra
+    kotlinVersion = "1.6.0"
 
     repositories {
         mavenCentral()
     }
     dependencies {
-        classpath(kotlin("gradle-plugin", kotlin_version))
+        classpath(kotlin("gradle-plugin", kotlinVersion))
     }
 }
 
@@ -20,7 +20,7 @@ apply {
     plugin("kotlin")
 }
 
-val kotlin_version: String by extra
+val kotlinVersion: String by extra
 
 val implementation by configurations
 val testImplementation by configurations
@@ -31,7 +31,7 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8", kotlin_version))
+    implementation(kotlin("stdlib-jdk8", kotlinVersion))
     implementation("commons-cli", "commons-cli", "1.5.0")
     implementation("org.telegram", "telegrambots", "5.5.0")
     implementation("com.squareup.okhttp3", "okhttp", "4.9.3")

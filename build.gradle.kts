@@ -27,7 +27,6 @@ val testImplementation by configurations
 
 repositories {
     mavenCentral()
-    jcenter()
 }
 
 dependencies {

@@ -13,7 +13,7 @@ buildscript {
 }
 
 group = "org.moztw.telegram-bot"
-version = "1.1.1-SNAPSHOT"
+version = "1.1.2-SNAPSHOT"
 
 apply {
     plugin("java")

@@ -38,7 +38,7 @@ dependencies {
     testImplementation("org.junit.jupiter", "junit-jupiter-api", "5.8.2")
 }
 
-configure<JavaPluginConvention> {
+configure<JavaPluginExtension> {
     sourceCompatibility = JavaVersion.VERSION_1_8
 }
 tasks.withType<KotlinCompile> {

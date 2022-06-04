@@ -11,7 +11,7 @@ data class Chart(
     private val dataY = data.map { it.second.toInt() }
 
     private val dataMin = dataY.minByOrNull { it } ?: 0
-    private val dataMax = dataY.minByOrNull { it } ?: 0
+    private val dataMax = dataY.maxByOrNull { it } ?: 0
     private val dataMid = (dataMin + dataMax) / 2
     private val dataQuad = arrayOf(dataMin, (dataMin + dataMid) / 2, dataMid, (dataMid + dataMax) / 2, dataMax)
 

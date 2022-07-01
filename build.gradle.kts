@@ -32,8 +32,8 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib-jdk8", kotlinVersion))
     implementation("commons-cli", "commons-cli", "1.5.0")
-    implementation("org.telegram", "telegrambots", "6.0.1")
-    implementation("com.squareup.okhttp3", "okhttp", "4.9.3")
+    implementation("org.telegram", "telegrambots", "6.1.0")
+    implementation("com.squareup.okhttp3", "okhttp", "4.10.0")
     implementation("com.beust", "klaxon", "5.5")
     testImplementation("org.junit.jupiter", "junit-jupiter-api", "5.8.2")
 }

@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
     var kotlinVersion: String by extra
-    kotlinVersion = "1.7.0"
+    kotlinVersion = "1.7.10"
 
     repositories {
         mavenCentral()

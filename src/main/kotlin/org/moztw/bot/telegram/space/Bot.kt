@@ -1,5 +1,6 @@
 package org.moztw.bot.telegram.space
 
+import io.prometheus.client.Counter
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.moztw.bot.telegram.space.co2.SpaceCo2
@@ -20,10 +21,13 @@ import java.util.*
 internal class Bot(val username: String, val token: String) : TelegramLongPollingBot() {
 
     override fun onUpdateReceived(update: Update) {
+        updates.inc()
         println("* [$dateTime] Update received: $update")
 
-        if (!(update.hasMessage() && onMessageReceived(update.message) || update.hasCallbackQuery() && onCallbackQueryReceived(update.callbackQuery)))
+        if (!(update.hasMessage() && onMessageReceived(update.message) || update.hasCallbackQuery() && onCallbackQueryReceived(update.callbackQuery))) {
+            updatesUnhandled.inc()
             println("* [$dateTime] Update not handled: $update")
+        }
     }
 
     private fun onCallbackQueryReceived(callbackQuery: CallbackQuery): Boolean {
@@ -40,6 +44,7 @@ internal class Bot(val username: String, val token: String) : TelegramLongPollin
     private fun onMessageReceived(message: Message): Boolean {
         if (message.hasText()) {
             if (isCommandCO2(message.text)) {
+                commandCalls.labels("co2").inc()
                 try {
                     execute(SendChatAction().apply {
                         chatId = message.chat.id.toString()
@@ -95,6 +100,7 @@ internal class Bot(val username: String, val token: String) : TelegramLongPollin
                 }
             } else if (isAdminChat(message.chat)) {
                 if (isCommandOpen(message.text)) {
+                    commandCalls.labels("space_open").inc()
                     if (tryExecute(Caption().getCaptionOpened(chatId = generalChatId))
                             && tryExecute(Reply().getGeneralMessageOpen(chatId = generalChatId, operator = message.from))
                             && tryExecute(Reply().getMessageOpen(message = message))) {
@@ -105,6 +111,7 @@ internal class Bot(val username: String, val token: String) : TelegramLongPollin
                         return true
                     }
                 } else if (isCommandClose(message.text)) {
+                    commandCalls.labels("space_close").inc()
                     if (tryExecute(Caption().getCaptionClosed(chatId = generalChatId))
                             && tryExecute(Reply().getGeneralMessageClose(chatId = generalChatId, operator = message.from))
                             && tryExecute(Reply().getMessageClose(message = message))) {
@@ -176,5 +183,21 @@ internal class Bot(val username: String, val token: String) : TelegramLongPollin
 
         val dateTime: String
             get() = dateFormat.format(Date())
+
+        val updates: Counter = Counter.build()
+            .name("updates_received_total")
+            .help("Total received updates.")
+            .register()
+
+        val updatesUnhandled: Counter = Counter.build()
+            .name("updates_received_unhandled_total")
+            .help("Total unhandled received updates.")
+            .register()
+
+        val commandCalls: Counter = Counter.build()
+            .name("command_calls_total")
+            .help("Total command calls.")
+            .labelNames("cmd")
+            .register()
     }
 }

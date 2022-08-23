@@ -19,10 +19,20 @@ fun main(args: Array<String>) {
         options.addOption(this)
     }
 
+    Option("p", "port", true, "the port of the prometheus exporter").run {
+        this.isRequired = false
+        options.addOption(this)
+    }
+
     try {
         val cmd = DefaultParser().parse(options, args)
         val botUsername = cmd.getOptionValue("username")
         val botToken = cmd.getOptionValue("token")
+        val exporterListenPort = cmd.getOptionValue("port", "")
+
+        if (exporterListenPort.isNotBlank()){
+            Exporter.run(exporterListenPort.toInt())
+        }
 
         try {
             TelegramBotsApi(DefaultBotSession::class.java).registerBot(Bot(username = botUsername, token = botToken))

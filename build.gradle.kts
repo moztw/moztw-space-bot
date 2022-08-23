@@ -35,6 +35,7 @@ dependencies {
     implementation("org.telegram", "telegrambots", "6.1.0")
     implementation("com.squareup.okhttp3", "okhttp", "4.10.0")
     implementation("com.beust", "klaxon", "5.5")
+    implementation("io.prometheus", "simpleclient", "0.16.0")
     testImplementation("org.junit.jupiter", "junit-jupiter-api", "5.8.2")
 }
 

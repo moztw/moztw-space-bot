@@ -31,8 +31,12 @@ internal class Bot(val username: String, val token: String) : TelegramLongPollin
     }
 
     private fun onCallbackQueryReceived(callbackQuery: CallbackQuery): Boolean {
+        callbackQueryCalls.inc()
         try {
-            Reply().getCheckList(callbackQuery).run { execute(this) }
+            Reply().getCheckList(callbackQuery).run {
+                telegramApiCalls.labels("EditMessageReplyMarkup").inc()
+                execute(this)
+            }
             return true
         } catch (e: TelegramApiException) {
             e.printStackTrace()
@@ -46,6 +50,7 @@ internal class Bot(val username: String, val token: String) : TelegramLongPollin
             if (isCommandCO2(message.text)) {
                 commandCalls.labels("co2").inc()
                 try {
+                    telegramApiCalls.labels("SendChatAction:Typing").inc()
                     execute(SendChatAction().apply {
                         chatId = message.chat.id.toString()
                         setAction(ActionType.TYPING)
@@ -73,10 +78,11 @@ internal class Bot(val username: String, val token: String) : TelegramLongPollin
                             chatId = message.chat.id.toString()
                             replyToMessageId = message.messageId
                             text = messageText
-                            setParseMode("HTML")
+                            parseMode = "HTML"
                         })
                     } else {
                         try {
+                            telegramApiCalls.labels("SendChatAction:UploadPhoto").inc()
                             execute(SendChatAction().apply {
                                 chatId = message.chat.id.toString()
                                 setAction(ActionType.UPLOADPHOTO)
@@ -130,6 +136,7 @@ internal class Bot(val username: String, val token: String) : TelegramLongPollin
 
     private fun tryExecute(caption: SetChatTitle): Boolean {
         try {
+            telegramApiCalls.labels("SetChatTitle").inc()
             execute(caption)
             return true
         } catch (e: TelegramApiException) {
@@ -141,6 +148,7 @@ internal class Bot(val username: String, val token: String) : TelegramLongPollin
 
     private fun tryExecute(sendMessage: SendMessage): Boolean {
         try {
+            telegramApiCalls.labels("SendMessage").inc()
             execute(sendMessage)
             return true
         } catch (e: TelegramApiException) {
@@ -198,6 +206,17 @@ internal class Bot(val username: String, val token: String) : TelegramLongPollin
             .name("command_calls_total")
             .help("Total command calls.")
             .labelNames("cmd")
+            .register()
+
+        val callbackQueryCalls: Counter = Counter.build()
+            .name("callback_query_calls_total")
+            .help("Total callback query calls.")
+            .register()
+
+        val telegramApiCalls: Counter = Counter.build()
+            .name("telegram_bots_api_calls_total")
+            .help("Total Telegram Bots API calls.")
+            .labelNames("method")
             .register()
     }
 }

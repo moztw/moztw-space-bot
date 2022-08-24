@@ -36,6 +36,10 @@ dependencies {
     implementation("com.squareup.okhttp3", "okhttp", "4.10.0")
     implementation("com.beust", "klaxon", "5.5")
     implementation("io.prometheus", "simpleclient", "0.16.0")
+    implementation("io.prometheus", "simpleclient_hotspot", "0.16.0")
+    implementation("io.prometheus", "simpleclient_httpserver", "0.16.0")
+    implementation("org.slf4j", "slf4j-api", "2.0.0")
+    implementation("org.slf4j", "slf4j-simple", "2.0.0")
     testImplementation("org.junit.jupiter", "junit-jupiter-api", "5.8.2")
 }
 

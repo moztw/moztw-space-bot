@@ -1,6 +1,7 @@
 package org.moztw.bot.telegram.space
 
 import io.prometheus.client.Counter
+import io.prometheus.client.Gauge
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.moztw.bot.telegram.space.co2.SpaceCo2
@@ -24,10 +25,11 @@ internal class Bot(val username: String, val token: String) : TelegramLongPollin
         updates.inc()
         println("* [$dateTime] Update received: $update")
 
-        if (!(update.hasMessage() && onMessageReceived(update.message) || update.hasCallbackQuery() && onCallbackQueryReceived(update.callbackQuery))) {
-            updatesUnhandled.inc()
-            println("* [$dateTime] Update not handled: $update")
-        }
+        if (update.hasMessage() && onMessageReceived(update.message)) return
+        if (update.hasCallbackQuery() && onCallbackQueryReceived((update.callbackQuery))) return
+
+        updatesUnhandled.inc()
+        println("* [$dateTime] Update not handled: $update")
     }
 
     private fun onCallbackQueryReceived(callbackQuery: CallbackQuery): Boolean {
@@ -104,9 +106,12 @@ internal class Bot(val username: String, val token: String) : TelegramLongPollin
                         }
                     }
                 }
+                return true
             } else if (isAdminChat(message.chat)) {
                 if (isCommandOpen(message.text)) {
                     commandCalls.labels("space_open").inc()
+                    spaceDoorState.set(1.0)
+                    spaceDoorStateTime.setToCurrentTime()
                     if (tryExecute(Caption().getCaptionOpened(chatId = generalChatId))
                             && tryExecute(Reply().getGeneralMessageOpen(chatId = generalChatId, operator = message.from))
                             && tryExecute(Reply().getMessageOpen(message = message))) {
@@ -118,6 +123,8 @@ internal class Bot(val username: String, val token: String) : TelegramLongPollin
                     }
                 } else if (isCommandClose(message.text)) {
                     commandCalls.labels("space_close").inc()
+                    spaceDoorState.set(0.0)
+                    spaceDoorStateTime.setToCurrentTime()
                     if (tryExecute(Caption().getCaptionClosed(chatId = generalChatId))
                             && tryExecute(Reply().getGeneralMessageClose(chatId = generalChatId, operator = message.from))
                             && tryExecute(Reply().getMessageClose(message = message))) {
@@ -217,6 +224,16 @@ internal class Bot(val username: String, val token: String) : TelegramLongPollin
             .name("telegram_bots_api_calls_total")
             .help("Total Telegram Bots API calls.")
             .labelNames("method")
+            .register()
+
+        val spaceDoorState: Gauge = Gauge.build()
+            .name("moztw_space_door_state")
+            .help("The state of MozTW Space Door. 0 = closed, 1 = opened")
+            .register()
+
+        val spaceDoorStateTime: Gauge = Gauge.build()
+            .name("moztw_space_door_state_time")
+            .help("The update time for the state of MozTW Space Door.")
             .register()
     }
 }

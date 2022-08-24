@@ -1,5 +1,6 @@
 package org.moztw.bot.telegram.space
 
+import io.prometheus.client.exporter.HTTPServer
 import org.apache.commons.cli.*
 import org.telegram.telegrambots.meta.TelegramBotsApi
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException
@@ -30,8 +31,10 @@ fun main(args: Array<String>) {
         val botToken = cmd.getOptionValue("token")
         val exporterListenPort = cmd.getOptionValue("port", "")
 
-        if (exporterListenPort.isNotBlank()){
-            Exporter.run(exporterListenPort.toInt())
+        if (exporterListenPort.isNotEmpty()) {
+            HTTPServer.Builder()
+                .withPort(exporterListenPort.toInt())
+                .build()
         }
 
         try {
